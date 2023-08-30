@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>Jimp example</title>
+    <meta name="description" content="Jimp example">
+    <meta name="author" content="YA-androidapp(https://github.com/yzkn)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+    <input type="file" id="file">
+
+    <img src="" alt="in" id="in">
+    <img src="" alt="out" id="out">
+
+    <script src="js/jimp.min.js"></script> <!-- https://cdnjs.cloudflare.com/ajax/libs/jimp/0.22.10/jimp.min.js -->
+    <script>
+        document.getElementById('file')?.addEventListener('change', e => {
+            if (e.target.files) {
+                Array.from(e.target.files).forEach((file, i) => {
+                    const url = URL.createObjectURL(file);
+                    document.getElementById('in').src = url;
+
+                    Jimp.read(url).then(image => {
+
+                        //
+
+                        image
+                            .scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+                                let R = this.bitmap.data[idx + 0];
+                                let G = this.bitmap.data[idx + 1];
+                                let B = this.bitmap.data[idx + 2];
+                                let A = this.bitmap.data[idx + 3];
+                                console.log(i, x, y, R, G, B, A);
+                            })
+
+                            // .contain(64, 64, Jimp.HORIZONTAL_ALIGN_LEFT, Jimp.RESIZE_NEAREST_NEIGHBOR)
+                            // .resize(64, Jimp.AUTO, Jimp.RESIZE_NEAREST_NEIGHBOR)
+                            // .crop(20, 10, 40, 30)
+                            // .pixelate(5)
+                            // .blur(3)
+
+                            .getBase64(Jimp.MIME_PNG, (error, img) => {
+                                document.getElementById('out').src = img
+                            })
+
+                        //
+
+                    });
+                });
+            }
+        }, false);
+    </script>
+
+</body>
+
+</html><!-- Copyright (c) 2023 YA-androidapp(https://github.com/yzkn) All rights reserved. -->
